@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaletestapp
+  labels:
+    app.kubernetes.io/name: scaletestapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: scaletestapp
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: scaletestapp
+    spec:
+      containers:
+        - name: scaletestapp
+          image: ghcr.io/yandex-practicum/scaletestapp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 25m
+              memory: 24Mi
+            limits:
+              cpu: 250m
+              memory: 30Mi

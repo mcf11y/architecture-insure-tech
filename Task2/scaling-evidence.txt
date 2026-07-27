@@ -1,0 +1,66 @@
+InsureTech Task 2 — HPA load-test evidence
+Date: 2026-07-27
+Cluster: Minikube profile insuretech-task2
+Metrics source: metrics-server
+
+Configuration
+-------------
+Deployment replicas: 1
+Memory request: 24Mi
+Memory limit: 30Mi
+HPA target: 80% memory utilization
+HPA range: 1..10 replicas
+Load: Locust, 200 users, spawn rate 20 users/s, duration 4 minutes
+
+Before load
+-----------
+NAME           REFERENCE                 TARGETS           MINPODS   MAXPODS   REPLICAS
+scaletestapp   Deployment/scaletestapp   memory: 76%/80%   1         10        1
+
+NAME                            CPU(cores)   MEMORY(bytes)
+scaletestapp-55fbd7bc5d-rvcj7   3m           18Mi
+
+During load
+-----------
+17:15:27
+scaletestapp   Deployment/scaletestapp   memory: 111%/80%   1   10   2
+
+17:16:18
+scaletestapp   Deployment/scaletestapp   memory: 98%/80%    1   10   3
+
+After load
+----------
+2026-07-27 17:18:32 MSK
+scaletestapp   Deployment/scaletestapp   memory: 87%/80%    1   10   4
+
+Deployment: 4/4 Ready
+
+HPA events
+----------
+SuccessfulRescale  New size: 2; reason: memory resource utilization
+                   (percentage of request) above target
+SuccessfulRescale  New size: 3; reason: memory resource utilization
+                   (percentage of request) above target
+SuccessfulRescale  New size: 4; reason: memory resource utilization
+                   (percentage of request) above target
+
+HPA conditions
+--------------
+AbleToScale:   True, ReadyForNewScale
+ScalingActive: True, ValidMetricFound
+ScalingLimited: False, DesiredWithinRange
+
+Locust result
+-------------
+Requests recorded in CSV: 15,665
+Failures: 0
+Average response time: approximately 8 ms
+Median response time: 3 ms
+Maximum response time: 52 ms
+Average throughput: approximately 65 requests/s
+
+Conclusion
+----------
+The Horizontal Pod Autoscaler reacted to memory utilization above 80% and
+increased the Deployment from 1 to 4 replicas while the load test completed
+without request failures.
