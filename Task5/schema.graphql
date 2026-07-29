@@ -1,0 +1,39 @@
+schema {
+  query: Query
+}
+
+type Query {
+  """
+  Возвращает клиента по идентификатору.
+  Вложенные данные загружаются только тогда, когда потребитель запросил
+  соответствующие поля documents или relatives.
+  """
+  client(id: ID!): Client
+}
+
+type Client {
+  id: ID!
+  name: String
+  age: Int
+  documents: [Document!]!
+  relatives: [Relative!]!
+}
+
+type Document {
+  id: ID!
+  type: String
+  number: String
+
+  """Дата выдачи в формате ISO 8601."""
+  issueDate: String
+
+  """Дата окончания действия в формате ISO 8601."""
+  expiryDate: String
+}
+
+type Relative {
+  id: ID!
+  relationType: String
+  name: String
+  age: Int
+}
